@@ -106,7 +106,7 @@ case "$1" in
 	# usuarios
 	/usr/bin/AutoFirma-Firefox -all
 
-	echo "La aplicación Autofirma ha sido instalada"
+	echo "La aplicación Autofirma ha sido instalada" >&2
 
 	exit 0
 	;;
