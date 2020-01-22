@@ -2,40 +2,42 @@
 # borramos los ficheros de certificados de los directorios de instalacion (solo si se purga el paquete)
 
 case "$1" in
-  remove)
-    exit 0
-    ;;
+    remove)
+	exit 0
+	;;
 
-  purge)
+    purge)
+	if [ -d "/usr/lib/AutoFirma" ];
+	then
+	    rm /usr/lib/AutoFirma/*
+	fi
 
-if [ -d "/usr/lib/AutoFirma" ];
- then
- rm /usr/lib/AutoFirma/*
-fi
+	if [ -d "/usr/share/AutoFirma" ];
+	then
+	    rm /usr/share/AutoFirma/*
+	fi
 
-if [ -d "/usr/share/AutoFirma" ];
- then
- rm /usr/share/AutoFirma/*
-fi
+	certname="AutoFirma ROOT LOCAL"
 
-certname="AutoFirma ROOT LOCAL"
+	userdir=$(find /home/ -maxdepth 2 -name ".mozilla")
 
-userdir=$(find /home/ -maxdepth 2 -name ".mozilla") 
+	for dir in $userdir
+	do
+	    echo "Eliminando el certificado de AutoFirma en el directorio" $dir
+	    for certdb in $(find $userdir/firefox -maxdepth 2 -name "cert8.db")
+	    do
+		certdir=$(dirname ${certdb});
+		certutil -D -n "${certname}" -d dbm:${certdir}
+	    done
+	done
 
-for dir in $userdir
-do
-  echo "Eliminando el certificado de AutoFirma en el directorio" $dir
-  for certdb in $(find $userdir/firefox -maxdepth 2 -name "cert8.db")
-  do
-    certdir=$(dirname ${certdb});
-    certutil -D -n "${certname}" -d dbm:${certdir}
-  done
-done
-
-echo "Los datos de la aplicación Autofirma han sido eliminados"
-
-    exit 0
-  ;;
-
+	echo "Los datos de la aplicación Autofirma han sido eliminados"
+	exit 0
+	;;
 esac
 
+#DEBHELPER#
+
+# Local Variables:
+# coding: utf-8
+# End:
