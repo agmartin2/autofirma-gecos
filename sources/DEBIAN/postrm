@@ -1,6 +1,8 @@
 #!/bin/sh
 # borramos los ficheros de certificados de los directorios de instalacion (solo si se purga el paquete)
 
+set -e
+
 case "$1" in
     remove)
 	exit 0
